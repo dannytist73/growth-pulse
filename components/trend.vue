@@ -31,9 +31,12 @@ const props = defineProps({
     color: String,
     loading: Boolean,
 });
-const { currency } = useCurrency(props.amount);
+
+const { amount } = toRefs(props);
 
 const trendingUp = computed(() => props.amount >= props.lastAmount);
+
+const { currency } = useCurrency(amount);
 
 const icon = computed(() =>
     trendingUp.value
