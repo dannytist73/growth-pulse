@@ -49,8 +49,6 @@ const percentageTrend = computed(() => {
 
     const ratio = ((higher - lower) / lower) * 100;
 
-    //console.log(higher, lower, ratio, Math.ceil(ratio));
-
     return `${Math.ceil(ratio)}%`;
 });
 </script>
