@@ -96,7 +96,7 @@ const props = defineProps({
 
 const isLoading = ref(false);
 const supabase = useSupabaseClient();
-const toast = useToast();
+const {toastSuccess, toastError} = useAppToast();
 
 const emit = defineEmits(["update:modelValue", "saved"]);
 
@@ -144,9 +144,8 @@ const save = async (e) => {
                .from("transactions")
                .upsert({ ...state.value });
           if (!error) {
-               toast.add({
-                    title: "Transaction saved",
-                    icon: "i-heroicons-check-circle",
+               toastSuccess({
+                    title: "Transaction saved"
                });
                isOpen.value = false;
                emit("saved");
@@ -154,11 +153,9 @@ const save = async (e) => {
           }
           throw error;
      } catch (e) {
-          toast.add({
+          toastError({
                title: "Transaction not saved",
-               description: e.message,
-               icon: "i-heroicons-exclamation-circle",
-               color: "red",
+               description: e.message
           });
      } finally {
           isLoading.value = false;

@@ -1,0 +1,13 @@
+<template>
+  Avatar
+</template>
+
+<script>
+export default {
+
+}
+</script>
+
+<style>
+
+</style>
