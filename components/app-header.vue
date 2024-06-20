@@ -17,7 +17,7 @@
                     v-if="user"
                >
                     <UAvatar
-                         src="https://avatars.githubusercontent.com/u/63273059?s=400&u=d7dec6e6ef8e281d929dac1e51c4d8a9effb3795&v=4"
+                         :src="url"
                          alt="Avatar"
                     />
 
@@ -49,6 +49,7 @@
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
 const colorMode = useColorMode();
+const {url} = useAvatarUrl();
 
 const modes = ["light", "dark"];
 
