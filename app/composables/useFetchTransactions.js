@@ -40,7 +40,7 @@ export const useFetchTransactions = (period) => {
     const fetchTransactions = async () => {
         pending.value = true;
         try {
-            const { data, pending } = await useAsyncData(
+            const { data } = await useAsyncData(
                 `transactions-${period.value.from.toDateString()}-${period.value.to.toDateString()}`,
                 async () => {
                     const { data, error } = await supabase
@@ -49,10 +49,13 @@ export const useFetchTransactions = (period) => {
                         .gte("created_at", period.value.from.toISOString())
                         .lte("created_at", period.value.to.toISOString())
                         .order("created_at", { ascending: false });
+
                     if (error) return [];
+
                     return data;
                 }
             );
+
             return data.value;
         } finally {
             pending.value = false;
@@ -62,17 +65,7 @@ export const useFetchTransactions = (period) => {
     const refresh = async () =>
         (transactions.value = await fetchTransactions());
 
-    watch(period, async (previousValue, currentValue) => {
-        if (
-            previousValue.from.toISOString() ===
-                currentValue.from.toISOString() &&
-            previousValue.to.toISOString() === currentValue.to.toISOString()
-        ) {
-            return;
-        }
-
-        await refresh();
-    });
+    watch(period, async () => await refresh());
 
     const transactionsGroupedByDate = computed(() => {
         let groupedTransactions = {};

@@ -2,7 +2,7 @@
     <section class="flex items-center justify-between mb-10">
         <h1 class="text-4xl font-extrabold">Summary</h1>
         <div>
-            <USelectMenu v-model="timePreference" :options="timeOptions" />
+            <USelectMenu v-model="selectedView" :options="timeOptions" />
         </div>
     </section>
 
@@ -88,13 +88,12 @@
 <script setup lang="ts">
 import { timeOptions } from "~/constants";
 
-const user = useSupabaseUser()
-
-const timePreference = ref(user.value.user_metadata?.time_preferences);
+const user = useSupabaseUser();
+const selectedView = ref(
+    user.value.user_metadata?.time_preferences ?? timeOptions[3]
+);
 const isOpen = ref(false);
-const dates = useSelectedTimePeriod(timePreference);
-
-const { current, previous } = useSelectedTimePeriod(timePreference);
+const { current, previous } = useSelectedTimePeriod(selectedView);
 
 const {
     pending,
@@ -102,8 +101,6 @@ const {
     transactions: {
         incomeCount,
         expenseCount,
-        investmentCount,
-        savingsCount,
         incomeTotal,
         expenseTotal,
         investmentTotal,
@@ -111,8 +108,6 @@ const {
         groupedTransactions: { byDate },
     },
 } = useFetchTransactions(current);
-await refresh();
-
 const {
     refresh: refreshPrevious,
     transactions: {
@@ -122,7 +117,8 @@ const {
         savingsTotal: prevSavingsTotal,
     },
 } = useFetchTransactions(previous);
-await refreshPrevious();
+
+await Promise.all([refresh(), refreshPrevious()]);
 </script>
 
 <style></style>

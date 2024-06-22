@@ -10,7 +10,12 @@
                 :required="true"
                 help="You will receive an email with the confirmation link."
             >
-                <UInput type="email" placeholder="Email" required v-model="email" />
+                <UInput
+                    type="email"
+                    placeholder="Email"
+                    required
+                    v-model="email"
+                />
             </UFormGroup>
             <UButton
                 type="submit"
@@ -42,29 +47,29 @@
 const success = ref(false);
 const email = ref("");
 const pending = ref(false);
-const {toastSuccess, toastError} = useAppToast();
+const { toastSuccess, toastError } = useAppToast();
 const supabase = useSupabaseClient();
-const redirectUrl = useRuntimeConfig().public.baseUrl
+const redirectUrl = useRuntimeConfig().public.baseUrl;
 
-useUserAuthenticated()
+useUserAuthenticated();
 
 const handleLogin = async () => {
     pending.value = true;
     try {
-        const {error} = await supabase.auth.signInWithOtp({
+        const { error } = await supabase.auth.signInWithOtp({
             email: email.value,
             options: {
-                emailRedirectTo: `${redirectUrl}/confirm`
-            }
-        })
+                emailRedirectTo: `${redirectUrl}/confirm`,
+            },
+        });
 
         if (error) {
             toastError({
-                title: 'Error in authentication',
-                description: error.message
-            })
+                title: "Error in authentication",
+                description: error.message,
+            });
         } else {
-            success.value = true
+            success.value = true;
         }
     } finally {
         pending.value = false;
